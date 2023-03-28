@@ -10,7 +10,6 @@ const router = Router();
 
 router.route('/airdrop').post(async (req: Request, res: Response) => {
   try {
-    console.log('body', req.body);
     const { solAddress, sol } = req.body;
     const numericSol = Number(sol);
     const publicKey = new PublicKey(solAddress);
@@ -20,25 +19,24 @@ router.route('/airdrop').post(async (req: Request, res: Response) => {
       publicKey,
       LAMPORTS_PER_SOL * numericSol
     );
-    console.log('airdropSignature', airdropSignature);
-    // const latestBlockHash = await connection.getLatestBlockhash();
 
-    // const transactionCompleted = await connection.confirmTransaction({
-    //   blockhash: latestBlockHash.blockhash,
-    //   lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-    //   signature: airdropSignature,
-    // });
-    const transactionCompleted = await connection.confirmTransaction(
-      airdropSignature
-    );
+    const latestBlockHash = await connection.getLatestBlockhash();
 
-    console.log('transactionCompleted', transactionCompleted);
+    const transactionCompleted = await connection.confirmTransaction({
+      blockhash: latestBlockHash.blockhash,
+      lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+      signature: airdropSignature,
+    });
+
     res.status(200).json({
       success: true,
       msg: `${sol} sol successfully air dropped to wallet ${publicKey}`,
     });
   } catch (error) {
     console.log(error);
+    res
+      .status(500)
+      .json({ success: false, msg: 'Something went wrong! Please try again.' });
   }
 });
 
