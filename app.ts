@@ -1,6 +1,12 @@
-import express from 'express';
 import path from 'path';
-import { router } from './controller';
+import express from 'express';
+
+import { config } from 'dotenv';
+config();
+
+import { router } from './route';
+
+const PORT = process.env.PORT;
 
 const app = express();
 
@@ -9,6 +15,6 @@ app.use(express.static(path.join(__dirname, './public')));
 
 app.use('/', router);
 
-app.listen(8000, () => {
-  console.log('Listening on port 8000');
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });

@@ -8,7 +8,7 @@ import { Router, Request, Response } from 'express';
 
 const router = Router();
 
-router.route('/airdrop').post(async (req: Request, res: Response) => {
+const airdropSolToAddress = async (req: Request, res: Response) => {
   try {
     const { solAddress, sol } = req.body;
     const numericSol = Number(sol);
@@ -28,9 +28,15 @@ router.route('/airdrop').post(async (req: Request, res: Response) => {
       signature: airdropSignature,
     });
 
+    if (transactionCompleted.value.err) {
+      return res.status(500).json({
+        success: false,
+        msg: 'Something went wrong! Please try again.',
+      });
+    }
     res.status(200).json({
       success: true,
-      msg: `${sol} sol successfully air dropped to wallet ${publicKey}`,
+      msg: `${sol} sol successfully air dropped to wallet: ${publicKey}`,
     });
   } catch (error) {
     console.log(error);
@@ -38,6 +44,7 @@ router.route('/airdrop').post(async (req: Request, res: Response) => {
       .status(500)
       .json({ success: false, msg: 'Something went wrong! Please try again.' });
   }
-});
+};
+router.route('/airdrop').post(airdropSolToAddress);
 
 export { router };
