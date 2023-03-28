@@ -2,7 +2,7 @@
   "name": "solana-airdrop",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "./build/app.js",
   "scripts": {
     "dev": "nodemon app.ts",
     "build": "tsc && cp -r ./public ./build ",
